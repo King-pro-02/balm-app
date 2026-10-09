@@ -1,6 +1,6 @@
 import { FontAwesome } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -11,28 +11,44 @@ import {
 } from "react-native";
 import Header from "../../../components/Header";
 import BloodPressure from "../../../components/healthViews/bloodPressure";
-import healthViews from "../../../utils/utils";
+import BloodGlucose from "../../../components/healthViews/bloodGlucose";
+import { healthViews } from "../../../utils/utils";
 
 const index = () => {
   const [activeView, setActiveView] = useState("Blood Pressure");
+const [isNight, setIsNight] = useState(false);
 
+  useEffect(()=> {
+    const checkTime = () => {
+      const hour = new Date().getHours()
+
+      setIsNight(hour >= 18 || hour < 6)
+    };
+    checkTime();
+
+    const interval = setInterval(checkTime, 600000);
+
+    return () => clearInterval(interval)
+  }, [])
+
+
+  const themeText = isNight ? styles.darkThemeTexts : styles.lightThemeTexts
   return (
     <ScrollView>
       <Header />
 
       {/* Welcome Section */}
       <ImageBackground
-        source={require("../../../assets/images/morningBackground.jpg")}
+        source={isNight ? require("../../../assets/images/backgroundNight.jpg") : require("../../../assets/images/morningBackground.jpg")}
         style={styles.greetingBackground}
       >
         <View style={styles.welcomeContainer}>
           <View style={styles.welcomeTextView}>
-            <Text style={styles.welcomeGreeting}>Good morning,</Text>
-            <Text style={styles.welcomeName}> King! </Text>
-            <Text style={styles.welcomeText}>
-              {" "}
+            <Text style={[styles.welcomeGreeting, themeText]}>{ !isNight ? "Good morning," : "Good evening,"}</Text>
+            <Text style={[styles.welcomeName, themeText]}> King! </Text>
+            <Text style={[styles.welcomeText, themeText]}>
               Your health matters. Stay on track with your readings, follow-ups
-              and medications
+              and medications.
             </Text>
           </View>
           <View>
@@ -74,7 +90,10 @@ const index = () => {
           </Pressable>
         ))}
       </View>
-      <BloodPressure />
+      
+      { activeView === "Blood Pressure" && (<BloodPressure />)}
+      { activeView === "Blood Glucose" && (<BloodGlucose />)}
+      
     </ScrollView>
   );
 };
@@ -104,6 +123,12 @@ const styles = StyleSheet.create({
     fontSize: 9,
   },
   greetingBackground: { flex: 1 },
+  lightThemeTexts: {
+    color: "#0d0b0b"
+  },
+  darkThemeTexts:{
+    color: "#dfdfdf"
+  },
 
   // selector
   viewSelector: {

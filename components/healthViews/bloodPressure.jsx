@@ -1,28 +1,99 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  TextInput,
+} from "react-native";
+import BpModals from "../modals/bpModals";
+import Feather from "@expo/vector-icons/Feather";
+import useBloodPressure from "../../hooks/useBloodPressure";
 
 const BloodPressure = () => {
+  const { readings, addReading } = useBloodPressure();
+  const [openModal, setOpenModal] = useState(false);
+
+const latestReading = readings[0]
+
+  const time = latestReading ? new Date(latestReading.createdAt).toLocaleString() : "Date and Time"
+  const displaySys = latestReading ? latestReading.systolic : "--"
+  const displayDias = latestReading ? latestReading.diastolic : "--"
   return (
     <View>
       {/* heading */}
       <View style={styles.headerContainer}>
         <View style={styles.headerIconView}>
-          {" "}
           <FontAwesome6 name="heart-pulse" size={20} color="#FFFFFF" />
         </View>
         <View style={styles.headerTextView}>
           <Text style={styles.headerText}>Blood Pressure</Text>
           <Text style={styles.headerSubText}>
-            Keep your blood pressure in a healthy range
+            Keep your blood pressure within a healthy range
           </Text>
         </View>
-        <Pressable style={styles.addButton}>
+        <Pressable style={styles.addButton} onPress={() => setOpenModal(true)}>
           <AntDesign name="plus" size={15} color="#FFFFFF" />
           <Text style={styles.addButtonText}>Add Reading</Text>
         </Pressable>
       </View>
-      {/* readings and graphs */}
+
+      <Modal
+        visible={openModal}
+        animationType="slide"
+        onRequestClose={() => setOpenModal(false)}
+        style={styles.mod}
+        transparent={true}
+      >
+        <View style={styles.overlay}>
+          <Pressable
+            onPress={() => setOpenModal(false)}
+            style={[styles.exitButton]}
+          >
+            <Feather name="x-circle" size={24} color="red" />
+          </Pressable>
+
+          <BpModals
+            addReading={addReading}
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+          />
+        </View>
+      </Modal>
+
+      {/* Latest readings*/}
+      <View style={styles.readingMain}>
+        <View style={styles.latestReadingContainer}>
+          <Text style={styles.latestReadingText}>Latest Reading</Text>
+          <Text style={styles.text}>{time}</Text>
+        </View>
+        <View style={styles.subArrangements}>
+          <Text style={styles.reading}>{displaySys}/{displayDias}</Text>
+          <Text style={styles.text}>mmHg</Text>
+        </View>
+        <View style={styles.showRemark}>
+          <AntDesign name="check-circle" size={20} color="white" />
+          <Text style={styles.unitDescription}>Normal</Text>
+        </View>
+        <View style={[styles.subArrangements]}>
+          <View style={styles.rangeContainer}>
+            <Text style={styles.descriptionRemark}>Normal</Text>
+            <Text style={styles.text}> &lt; 130/85</Text>
+          </View>
+          <View style={styles.rangeContainer}>
+            <Text style={styles.descriptionRemark}>Elevated</Text>
+            <Text style={styles.text}> 130-139 / 85-89</Text>
+          </View>
+          <View style={styles.rangeContainer}>
+            <Text style={styles.descriptionRemark}>High</Text>
+            <Text style={styles.text}> &ge; 140/90 </Text>
+          </View>
+        </View>
+      </View>
+      {/* graph */}
       <View></View>
       {/* bottom tabs */}
       <View></View>
@@ -37,6 +108,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
+    paddingHorizontal: 5
   },
   headerIconView: {
     width: 30,
@@ -47,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTextView: {
-    marginRight: 30,
+    marginRight: 18,
   },
   headerText: {
     fontFamily: "InterBold",
@@ -69,5 +141,90 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontFamily: "InterRegular",
     color: "#FFFFFF",
+  },
+  exitButton: {
+    zIndex: 50,
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.5,
+  },
+  mod: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "flex-end",
+  },
+  readingMain: {
+    margin: 10,
+    padding: 10,
+    borderWidth: 1,
+     borderColor: "#E7EDF5",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    backgroundColor: "white"
+  },
+  latestReadingContainer: {
+    width: "100%",
+  },
+  subArrangements: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  latestReadingText: {
+    fontFamily: "InterBold",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  text: {
+    fontFamily: "InterRegular",
+    fontSize: 10,
+    color: "#525455",
+  },
+  reading: {
+    fontFamily: "InterBold",
+    fontWeight: "bold",
+    fontSize: 30,
+  },
+  unit: {
+    fontFamily: "InterRegular",
+    fontSize: 10,
+  },
+  showRemark: {
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: "green",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    gap: 5,
+  },
+  unitDescription: {
+    fontFamily: "InterBold",
+    fontWeight: "bold",
+    fontSize: 12,
+    color: "white"
+  },
+  rangeContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
   },
 });

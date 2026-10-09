@@ -5,5 +5,17 @@ const healthViews = [
   { title: "Medications", icon: "capsules", color: "#653115" },
 ];
 
+const bgCheckTime = [{
+label: "Over 8 hours ago",
+value: "fasting",
+},
+{
+label: "Within 2 hours ago",
+value: "2 hrs post prandial",
+},
+{
+label: "Not sure",
+value: "random",
+}]
 
-export default healthViews
+export {healthViews, bgCheckTime}

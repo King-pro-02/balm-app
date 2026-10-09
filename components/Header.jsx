@@ -1,8 +1,23 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 const Header = () => {
+
+  const [isNight, setIsNight] = useState(false);
+
+  useEffect(()=> {
+    const checkTime = () => {
+      const hour = new Date().getHours()
+
+      setIsNight(hour >= 18 || hour < 6)
+    };
+    checkTime();
+
+    const interval = setInterval(checkTime, 600000);
+
+    return () => clearInterval(interval)
+  }, [])
   return (
     <View style={styles.Header}>
       {/* LOGO */}
