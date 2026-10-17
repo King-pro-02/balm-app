@@ -57,6 +57,7 @@ const _layout = () => {
         name="profile"
         options={{
           title: "Profile",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="user" size={size} color={color} />
           ),
@@ -66,6 +67,7 @@ const _layout = () => {
           name="statistics"
           options={{
             title: "Statistics",
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <Entypo name="pie-chart" size={size} color={color} />
             ),
@@ -75,6 +77,7 @@ const _layout = () => {
         name="support"
         options={{
           title: "Support",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <FontAwesome6 name="question-circle" size={size} color={color} />
           ),

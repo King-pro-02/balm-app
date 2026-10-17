@@ -3,6 +3,8 @@ import { useState } from "react";
 const useBloodGlucose = () => {
   const [readings, setReadings] = useState([]);
 
+  console.log (readings)
+  console.log (readings[0])
   const addReading = (item) => {
     const newReading = {
       ...item,

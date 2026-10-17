@@ -45,12 +45,12 @@ const Header = () => {
           <Text style={styles.userName}>King</Text>
         </Pressable>
 
-        <Pressable style={styles.logoutButton}>
+        {/* <Pressable style={styles.logoutButton}>
           <View>
             <AntDesign name="logout" size={16} color="lightblue" />
           </View>
           <Text style={styles.logoutText}>Log Out</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </View>
   );

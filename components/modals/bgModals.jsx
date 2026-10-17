@@ -8,13 +8,12 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import useBloodGlucose from "../../hooks/useBloodGlucose";
 import { bgCheckTime } from "../../utils/utils";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 const BgModals = ({ addReading, openModal, setOpenModal }) => {
   const [bgValues, setBgValues] = useState({
-    value: null,
+    value: "",
     valueType: "",
   });
 

@@ -16,10 +16,10 @@ const BloodGlucose = () => {
   const { readings, addReading } = useBloodGlucose();
   const [openModal, setOpenModal] = useState(false);
 
-const latestReading = readings[0]
+const latestReading = readings[readings.length-1]
 const time = latestReading ? new Date (latestReading.createdAt).toLocaleString() : "Date and Time"
-const displayValue = latestReading ? latestReading.Value : "--"
-const displayValueType = latestReading ? latestReading.ValueType : "--"
+const displayValue = latestReading ? latestReading.value : "--"
+const displayValueType = latestReading ? latestReading.valueType : "--"
 
   return (
     <View>

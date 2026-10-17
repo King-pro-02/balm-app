@@ -17,7 +17,7 @@ const BloodPressure = () => {
   const { readings, addReading } = useBloodPressure();
   const [openModal, setOpenModal] = useState(false);
 
-const latestReading = readings[0]
+const latestReading = readings[readings.length-1]
 
   const time = latestReading ? new Date(latestReading.createdAt).toLocaleString() : "Date and Time"
   const displaySys = latestReading ? latestReading.systolic : "--"

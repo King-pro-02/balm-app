@@ -4,7 +4,10 @@ import React from 'react'
 
 const HomeLayout = () => {
   return (
-    <Stack/>
+    <Stack 
+    screenOptions={{
+      headerShown: false,
+    }}/>
   )
 }
 

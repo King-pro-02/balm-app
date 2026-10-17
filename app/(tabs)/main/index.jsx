@@ -12,7 +12,10 @@ import {
 import Header from "../../../components/Header";
 import BloodPressure from "../../../components/healthViews/bloodPressure";
 import BloodGlucose from "../../../components/healthViews/bloodGlucose";
+import FollowUp from "../../../components/healthViews/followUp";
+import Medications from "../../../components/healthViews/medications";
 import { healthViews } from "../../../utils/utils";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const index = () => {
   const [activeView, setActiveView] = useState("Blood Pressure");
@@ -34,13 +37,15 @@ const [isNight, setIsNight] = useState(false);
 
   const themeText = isNight ? styles.darkThemeTexts : styles.lightThemeTexts
   return (
-    <ScrollView>
+    <SafeAreaView style={{flex: 1}}>
+      <ScrollView>
       <Header />
 
       {/* Welcome Section */}
       <ImageBackground
         source={isNight ? require("../../../assets/images/backgroundNight.jpg") : require("../../../assets/images/morningBackground.jpg")}
         style={styles.greetingBackground}
+        imageStyle={isNight ? styles.backgroundImageStyleNight : styles.backgroundImageStyleLight }
       >
         <View style={styles.welcomeContainer}>
           <View style={styles.welcomeTextView}>
@@ -93,8 +98,10 @@ const [isNight, setIsNight] = useState(false);
       
       { activeView === "Blood Pressure" && (<BloodPressure />)}
       { activeView === "Blood Glucose" && (<BloodGlucose />)}
-      
+      { activeView === "Follow Up" && (<FollowUp />)}
+      { activeView === "Medications" && (<Medications />)}
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -122,12 +129,20 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 9,
   },
-  greetingBackground: { flex: 1 },
+  greetingBackground: { 
+    flex: 1,
+   },
+   backgroundImageStyleLight: {
+opacity: 0.5
+   },
+   backgroundImageStyleNight: {
+opacity: 0.85
+   },
   lightThemeTexts: {
     color: "#0d0b0b"
   },
   darkThemeTexts:{
-    color: "#dfdfdf"
+    color: "#b49f68"
   },
 
   // selector
