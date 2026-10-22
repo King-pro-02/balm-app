@@ -8,29 +8,36 @@ import {
   View,
   Modal,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import BgModals from "../modals/bgModals";
 import Feather from "@expo/vector-icons/Feather";
 import useBloodGlucose from "../../hooks/useBloodGlucose";
+import BloodGlucoseGraph from "../graphs/bloodGlucoseGraph";
+
 const BloodGlucose = () => {
   const { readings, addReading } = useBloodGlucose();
+  const { width } = useWindowDimensions();
   const [openModal, setOpenModal] = useState(false);
 
-const latestReading = readings[readings.length-1]
-const time = latestReading ? new Date (latestReading.createdAt).toLocaleString() : "Date and Time"
-const displayValue = latestReading ? latestReading.value : "--"
-const displayValueType = latestReading ? latestReading.valueType : "--"
+  const [selectedType, setSelectedType] = useState("fasting");
+  const filteredReadings = readings.filter(
+    (reading) => reading.valueType === selectedType,
+  );
+
+  const latestReading = readings[0];
+  const time = latestReading
+    ? new Date(latestReading.createdAt).toLocaleString()
+    : "Date and Time";
+  const displayValue = latestReading ? latestReading.value : "--";
+  const displayValueType = latestReading ? latestReading.valueType : "--";
 
   return (
     <View>
       {/* heading */}
       <View style={styles.headerContainer}>
         <View style={styles.headerIconView}>
-          <FontAwesome6
-                name="droplet"
-                size={14}
-                color= "#FFFFFF"
-              />
+          <FontAwesome6 name="droplet" size={14} color="#FFFFFF" />
         </View>
         <View style={styles.headerTextView}>
           <Text style={styles.headerText}>Blood Glucose</Text>
@@ -97,7 +104,64 @@ const displayValueType = latestReading ? latestReading.valueType : "--"
         </View>
       </View>
       {/* graph */}
-      <View></View>
+      <View style={{ marginHorizontal: 16 }}>
+        <View style={styles.filterContainer}>
+          <Pressable
+            onPress={() => setSelectedType("fasting")}
+            style={[
+              styles.filterButton,
+              selectedType === "fasting" && styles.activeFilterButton,
+            ]}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                selectedType === "fasting" && styles.activeFilterText,
+              ]}
+            >
+              Fasting
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => setSelectedType("2 hrs post prandial")}
+            style={[
+              styles.filterButton,
+              selectedType === "2 hrs post prandial" &&
+                styles.activeFilterButton,
+            ]}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                selectedType === "2 hrs post prandial" &&
+                  styles.activeFilterText,
+              ]}
+            >
+              2 hrs post prandial
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => setSelectedType("random")}
+            style={[
+              styles.filterButton,
+              selectedType === "random" && styles.activeFilterButton,
+            ]}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                selectedType === "random" && styles.activeFilterText,
+              ]}
+            >
+              Random
+            </Text>
+          </Pressable>
+        </View>
+
+        <BloodGlucoseGraph readings={filteredReadings} width={width - 32} />
+      </View>
       {/* bottom tabs */}
       <View></View>
     </View>
@@ -111,7 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   headerIconView: {
     width: 30,
@@ -174,12 +238,12 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     borderWidth: 1,
-     borderColor: "#E7EDF5",
+    borderColor: "#E7EDF5",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   latestReadingContainer: {
     width: "100%",
@@ -223,11 +287,47 @@ const styles = StyleSheet.create({
     fontFamily: "InterBold",
     fontWeight: "bold",
     fontSize: 12,
-    color: "white"
+    color: "white",
   },
   rangeContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 10,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 12,
+    padding: 4,
+    gap: 8,
+    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+  },
+  filterButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderRadius: 9,
+     width: "33%"
+  },
+  activeFilterButton: {
+    backgroundColor: "#475569",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 2,
+  },
+  filterText: {
+    fontFamily: "InterRegular",
+    fontSize: 11,
+    color: "#475569",
+    textAlign: "center",
+  },
+  activeFilterText: {
+    color: "#FFFFFF",
+    fontFamily: "InterBold",
   },
 });

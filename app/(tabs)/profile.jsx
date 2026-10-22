@@ -6,12 +6,20 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useBloodGlucose from "../../hooks/useBloodGlucose";
+import useBloodPressure from "../../hooks/useBloodPressure";
 
 const profile = () => {
+
+const {readings: glucoseReadings, clearReadings: clearGlucoseReadings} = useBloodGlucose()
+const {readings: BloodPressureReadings, clearReadings: clearBloodPressureReadings} = useBloodPressure()
+
+const handleClearData = async () => {
+await Promise.all([clearBloodPressureReadings(), clearGlucoseReadings()]);
+};
   return (
    <SafeAreaView style={{flex: 1}}>
      <ScrollView>
@@ -109,6 +117,24 @@ const profile = () => {
 
           <AntDesign name="right" size={16} color="black" />
         </Pressable>
+        <View style={styles.divider}></View>
+        <Pressable style={styles.functionButtons} onPress={handleClearData}>
+          <View style={styles.functionButtonsSubview}>
+            <View style={styles.iconView}>
+              <MaterialIcons name="delete" size={24} color="black" />
+            </View>
+            <View>
+              <Text style={styles.functionButtonsTitle}>Delete Data</Text>
+              <Text style={styles.functionButtonsDescription}>
+                clear all records
+              </Text>
+            </View>
+          </View>
+
+          <AntDesign name="right" size={16} color="black" />
+        </Pressable>
+     
+
         <View style={styles.divider}></View>
         <Pressable style={styles.functionButtons}>
           <View style={styles.functionButtonsSubview}>
@@ -209,9 +235,10 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
   },
   iconView: {
-    backgroundColor: "lightgrey",
+    backgroundColor: "#cecece",
     padding: 4,
     borderRadius: 50,
+    marginRight: 5
   },
   functionButtonsTitle: {
     fontFamily: "InterBold",

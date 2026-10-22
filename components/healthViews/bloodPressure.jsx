@@ -8,16 +8,21 @@ import {
   View,
   Modal,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import BpModals from "../modals/bpModals";
 import Feather from "@expo/vector-icons/Feather";
 import useBloodPressure from "../../hooks/useBloodPressure";
+import BloodPressureGraph from "../graphs/bloodPressureGraph";
 
 const BloodPressure = () => {
   const { readings, addReading } = useBloodPressure();
+  
+  const { width } = useWindowDimensions();
   const [openModal, setOpenModal] = useState(false);
 
-const latestReading = readings[readings.length-1]
+
+const latestReading = readings[0]
 
   const time = latestReading ? new Date(latestReading.createdAt).toLocaleString() : "Date and Time"
   const displaySys = latestReading ? latestReading.systolic : "--"
@@ -94,7 +99,9 @@ const latestReading = readings[readings.length-1]
         </View>
       </View>
       {/* graph */}
-      <View></View>
+      <View style={{marginHorizontal: 16}}>
+        <BloodPressureGraph readings={readings} width={width-32}/>
+      </View>
       {/* bottom tabs */}
       <View></View>
     </View>
